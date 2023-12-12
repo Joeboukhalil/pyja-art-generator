@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pyja Image Generation</title>
+  <script src="script.js"></script>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <label for="shapeSelect">Choose a shape:</label>
+  <select id="shapeSelect">
+    <option value="circle">Circle</option>
+    <option value="triangle">Triangle</option>
+    <option value="smiley">Smiley Face</option>
+  </select>
+  <input type="text" id="drawingInstructions" placeholder="Enter drawing instructions">
+  <button onclick="drawFromInstructions()">Draw</button>
+  <button onclick="resetCanvas()">Reset</button>
+  <canvas id="myCanvas" width="600" height="600"></canvas>
+
+  <script>
+    // Pyja-like code for creating a colorful pattern on canvas
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function drawFromInstructions() {
+      var instructions = document.getElementById("drawingInstructions").value;
+      interpretInstructions(instructions);
+    }
+
+    function interpretInstructions(instructions) {
+      var parts = instructions.split(' ');
+
+      if (parts.length < 3) {
+        alert("Invalid instructions. Please provide at least 3 parameters.");
+        return;
+      }
+
+      var selectedShape = document.getElementById("shapeSelect").value;
+      var color = randomColor();
+      var x = parseFloat(parts[0]);
+      var y = parseFloat(parts[1]);
+      var size = parseFloat(parts[2]);
+
+      if (selectedShape === 'circle') {
+        drawCircle(x, y, size, color);
+      } else if (selectedShape === 'triangle') {
+        drawTriangle(x, y, size, color);
+      } else if (selectedShape === 'smiley') {
+        drawSmileyFace(x, y, size * 2, color);
+      }
+    }
+
+    function resetCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Your custom functions for image generation
+    function randomColor() {
+      return '#' + Math.floor(Math.random()*16777215).toString(16);
+    }
+
+    function drawCircle(x, y, radius, color) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    function drawTriangle(x, y, size, color) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + size, y);
+      ctx.lineTo(x + size / 2, y - (Math.sqrt(3) / 2) * size);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    function drawSmileyFace(x, y, size, color) {
+      // Draw circle for the face
+      drawCircle(x, y, size / 2, color);
+
+      // Draw eyes
+      var eyeRadius = size / 10;
+      drawCircle(x - size / 5, y - size / 5, eyeRadius, '#000');
+      drawCircle(x + size / 5, y - size / 5, eyeRadius, '#000');
+
+      // Draw mouth
+      ctx.beginPath();
+      ctx.arc(x, y, size / 3, 0.2 * Math.PI, 0.8 * Math.PI);
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = size / 20;
+      ctx.stroke();
+    }
+  </script>
+</body>
+</html>
